@@ -6,7 +6,6 @@ import (
 	"os"
 	"strings"
 	"time"
-
 	pokecache "github.com/05blue04/pokedexcli/cache"
 )
 
@@ -33,6 +32,11 @@ func init() {
 			name:        "mapb",
 			description: "Get the previous page of locations",
 			callback:    commandMapb,
+		},
+		"explore": {
+			name: "explore",
+			description: "explore a location on the map",
+			callback: commandExplore,
 		},
 	}
 }
@@ -64,7 +68,7 @@ func main() {
 			continue
 		}
 
-		if err := cmd.callback(&cfg); err != nil {
+		if err := cmd.callback(&cfg,input[1:]); err != nil {
 			fmt.Println("Error: ", err)
 		}
 

@@ -23,6 +23,22 @@ func processApiData(data []byte, cfg *Config) error {
 
 	return nil
 }
+func processLocationData(data []byte) error {
+
+	var resource locationArea
+
+	if err := json.Unmarshal(data, &resource); err != nil {
+		return err
+	}
+
+	fmt.Println("Found Pokemon:")
+
+	for _, pokemon := range resource.PokemonEncounters {
+		fmt.Println("-", pokemon.Pokemon.Name)
+	}
+
+	return nil
+}
 func handleMapCommand(cfg *Config, goBack bool) error {
 	url := cfg.Next
 
@@ -38,8 +54,8 @@ func handleMapCommand(cfg *Config, goBack bool) error {
 		url = "https://pokeapi.co/api/v2/location-area?offset=0&limit=20"
 	}
 
-	if val, check := cfg.cache.Get(url) ; check{
-		return processApiData(val,cfg)
+	if val, check := cfg.cache.Get(url); check {
+		return processApiData(val, cfg)
 	}
 
 	res, err := http.Get(url)
@@ -57,5 +73,32 @@ func handleMapCommand(cfg *Config, goBack bool) error {
 
 	cfg.cache.Add(url, data)
 
-	return processApiData(data,cfg)
+	return processApiData(data, cfg)
+}
+
+func handleExploreCommand(cfg *Config, location string) error {
+	url := "https://pokeapi.co/api/v2/location-area/" + location
+
+	if val, check := cfg.cache.Get(url); check {
+		return processLocationData(val)
+	}
+	res, err := http.Get(url)
+
+	if err != nil {
+		return fmt.Errorf("error creating request make sure the location name was typed correctly : %w", err)
+	}
+
+	defer res.Body.Close()
+
+	data, err := io.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	processLocationData(data)
+
+	cfg.cache.Add(url, data)
+
+	return nil
+
 }
