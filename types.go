@@ -1,5 +1,9 @@
 package main
 
+import (
+	"github.com/05blue04/pokedexcli/cache"
+)
+
 type cliCommand struct {
 	name        string
 	description string
@@ -9,6 +13,7 @@ type cliCommand struct {
 type Config struct {
 	Next     string
 	Previous *string
+	cache pokecache.Cache
 }
 
 type ApiResource struct {

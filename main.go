@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
+
+	pokecache "github.com/05blue04/pokedexcli/cache"
 )
 
 var commands map[string]cliCommand
@@ -22,14 +25,14 @@ func init() {
 			callback:    commandHelp,
 		},
 		"map": {
-			name: "map",
-			description: "Displays list of locations",
-			callback: commandMap,
+			name:        "map",
+			description: "Get the next page of locations",
+			callback:    commandMap,
 		},
 		"mapb": {
-			name: "mapb",
-			description: "Display list of last 20 locations",
-			callback: commandMapb,
+			name:        "mapb",
+			description: "Get the previous page of locations",
+			callback:    commandMapb,
 		},
 	}
 }
@@ -39,7 +42,10 @@ func CleanInput(text string) []string {
 }
 
 func main() {
-	cfg := Config{}
+	cfg := Config{
+		cache: pokecache.NewCache(5 * time.Second),
+	}
+
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		if !scanner.Scan() {
