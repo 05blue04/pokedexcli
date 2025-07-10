@@ -7,12 +7,39 @@ import (
 	"strings"
 )
 
+var commands map[string]cliCommand
+
+func init() {
+	commands = map[string]cliCommand{
+		"exit": {
+			name:        "exit",
+			description: "Exit the Pokedex",
+			callback:    commandExit,
+		},
+		"help": {
+			name:        "help",
+			description: "Displays a help message",
+			callback:    commandHelp,
+		},
+		"map": {
+			name: "map",
+			description: "Displays list of locations",
+			callback: commandMap,
+		},
+		"mapb": {
+			name: "mapb",
+			description: "Display list of last 20 locations",
+			callback: commandMapb,
+		},
+	}
+}
 func CleanInput(text string) []string {
 	text = strings.ToLower(text)
 	return strings.Fields(text)
 }
 
 func main() {
+	cfg := Config{}
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		if !scanner.Scan() {
@@ -24,8 +51,16 @@ func main() {
 			continue // skip empty lines
 		}
 
-		// fmt.Print("Pokedex > ")
-		fmt.Println("Your command was:", input[0])
+		cmd, ok := commands[input[0]]
+
+		if !ok {
+			fmt.Println("Unkown command")
+			continue
+		}
+
+		if err := cmd.callback(&cfg); err != nil {
+			fmt.Println("Error: ", err)
+		}
 
 	}
 	if err := scanner.Err(); err != nil {
