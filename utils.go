@@ -1,54 +1,47 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"time"
+	"strings"
 )
 
-func commandExit(cfg *Config, args []string) error {
-	fmt.Fprintf(os.Stdout, "Closing the Pokedex... Goodbye!")
-	os.Exit(0)
-	return nil
+func CleanInput(text string) []string {
+	text = strings.ToLower(text)
+	return strings.Fields(text)
 }
-
-func commandHelp(cfg *Config, args []string) error {
-	fmt.Fprintf(os.Stdout, "Welcome to the Pokedex!")
-	fmt.Fprintf(os.Stdout, "Usage:\n\n")
-
-	for _, c := range commands {
-		fmt.Fprintf(os.Stdout, "%v: %v\n", c.name, c.description)
-	}
-	return nil
-}
-
-func commandMap(cfg *Config, args []string) error {
-	err := handleMapCommand(cfg, false)
-	if err != nil {
-		return fmt.Errorf("error fetching map data: %w", err)
+func createPokemon(p pokemonData) Pokemon {
+	types := []string{}
+	for _, ty := range p.Types {
+		types = append(types, ty.Type.Name)
 	}
 
-	return nil
-}
+	var statistics Stats
 
-func commandMapb(cfg *Config, args []string) error {
-	err := handleMapCommand(cfg, true)
-	if err != nil {
-		return fmt.Errorf("error fetching map data: %w", err)
+	for _, stat := range p.Stats {
+		switch stat.Stat.Name {
+		case "hp":
+			statistics.hp = stat.BaseStat
+		case "attack":
+			statistics.attack = stat.BaseStat
+		case "defense":
+			statistics.defense = stat.BaseStat
+		case "special-attack":
+			statistics.specialAttack = stat.BaseStat
+		case "special-defense":
+			statistics.specialDefense = stat.BaseStat
+		case "speed":
+			statistics.speed = stat.BaseStat
+		}
 	}
 
-	return nil
-}
-
-func commandExplore(cfg *Config, args []string) error {
-	if len(args) < 1 {
-		return fmt.Errorf("missing location area name")
-	}
-	
-	err := handleExploreCommand(cfg, args[0])
-
-	if err != nil {
-		return err
+	return Pokemon{
+		Name:           p.Name,
+		BaseExperience: p.BaseExperience,
+		Height:         p.Height,
+		Weight:         p.Weight,
+		Types:          types,
+		Statistics:     statistics,
+		CaughtAt:       time.Now(),
 	}
 
-	return nil
 }

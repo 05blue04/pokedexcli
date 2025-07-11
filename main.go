@@ -4,9 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
 	"time"
-	pokecache "github.com/05blue04/pokedexcli/cache"
+	"github.com/05blue04/pokedexcli/cache"
 )
 
 var commands map[string]cliCommand
@@ -38,16 +37,23 @@ func init() {
 			description: "explore a location on the map",
 			callback: commandExplore,
 		},
+		"catch": {
+			name: "catch",
+			description: "try catching a pokemon",
+			callback: commandCatch,
+		},
+		"inspect": {
+			name: "inspect",
+			description: "inspect pokemon stats from your pokedex!",
+			callback: commandInspect,
+		},
 	}
-}
-func CleanInput(text string) []string {
-	text = strings.ToLower(text)
-	return strings.Fields(text)
 }
 
 func main() {
 	cfg := Config{
 		cache: pokecache.NewCache(5 * time.Second),
+		pokedex: make(map[string]Pokemon),
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)
