@@ -35,15 +35,17 @@ cd pokedexcli
 go run .
 ```
 
-### Available Commands 
-help                          # List available commands
-exit                          # Exit the Pokédex CLI
-map                           # Show the next page of location areas
-mapb                          # Show the previous page of location areas
-explore <location_name>       # View Pokémon encounters in a location
-catch <pokemon_name>          # Attempt to catch a Pokémon
-inspect <pokemon_name>        # View stats for a caught Pokémon
-pokedex                       # Show all caught Pokémon
+## Available Commands 🕹️
+```bash
+help # List available commands
+exit # Exit the Pokédex CLI
+map # Show the next page of location areas
+mapb # Show the previous page of location areas
+explore <location_name> # View Pokémon encounters in a location
+catch <pokemon_name> # Attempt to catch a Pokémon
+inspect <pokemon_name> # View stats for a caught Pokémon
+pokedex # Show all caught Pokémon
+```
 
 ### Catch Mechanics 
 When you run:
