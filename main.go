@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"os"
 	"time"
-	"github.com/05blue04/pokedexcli/cache"
+
+	pokecache "github.com/05blue04/pokedexcli/cache"
 )
 
 var commands map[string]cliCommand
@@ -33,26 +34,26 @@ func init() {
 			callback:    commandMapb,
 		},
 		"explore": {
-			name: "explore",
-			description: "explore a location on the map",
-			callback: commandExplore,
+			name:        "explore <location_name>",
+			description: "Explore a location on the map",
+			callback:    commandExplore,
 		},
 		"catch": {
-			name: "catch",
-			description: "try catching a pokemon",
-			callback: commandCatch,
+			name:        "catch <pokemon_name>",
+			description: "Attempt to catch a pokemon",
+			callback:    commandCatch,
 		},
 		"inspect": {
-			name: "inspect",
-			description: "inspect pokemon stats from your pokedex!",
-			callback: commandInspect,
+			name:        "inspect <pokemon_name>",
+			description: "View details about a caught Pokemon",
+			callback:    commandInspect,
 		},
 	}
 }
 
 func main() {
 	cfg := Config{
-		cache: pokecache.NewCache(5 * time.Second),
+		cache:   pokecache.NewCache(5 * time.Second),
 		pokedex: make(map[string]Pokemon),
 	}
 
@@ -74,7 +75,7 @@ func main() {
 			continue
 		}
 
-		if err := cmd.callback(&cfg,input[1:]); err != nil {
+		if err := cmd.callback(&cfg, input[1:]); err != nil {
 			fmt.Println("Error: ", err)
 		}
 
