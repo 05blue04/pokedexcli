@@ -73,7 +73,6 @@ func processPokemonData(data []byte, cfg *Config) error {
 
 	if caught {
 		catch := createPokemon(resource)
-		fmt.Println(catch)
 		cfg.pokedex[resource.Name] = catch
 		fmt.Println(resource.Name, "was caught!")
 	} else {

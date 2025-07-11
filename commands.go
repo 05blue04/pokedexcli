@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 )
+
 func commandExit(cfg *Config, args []string) error {
 	fmt.Fprintf(os.Stdout, "Closing the Pokedex... Goodbye!\n")
 	os.Exit(0)
@@ -42,7 +43,7 @@ func commandExplore(cfg *Config, args []string) error {
 	if len(args) < 1 {
 		return fmt.Errorf("missing location area name")
 	}
-	
+
 	err := handleExploreCommand(cfg, args[0])
 
 	if err != nil {
@@ -57,7 +58,7 @@ func commandCatch(cfg *Config, args []string) error {
 		return fmt.Errorf("missing location area name")
 	}
 
-	err := handleCatchCommand(cfg,args[0])
+	err := handleCatchCommand(cfg, args[0])
 
 	if err != nil {
 		return err
@@ -67,16 +68,29 @@ func commandCatch(cfg *Config, args []string) error {
 }
 
 func commandInspect(cfg *Config, args []string) error {
-	poke, ok := cfg.pokedex[args[0]] 
-	if !ok{
+	poke, ok := cfg.pokedex[args[0]]
+	if !ok {
 		return fmt.Errorf("can only inspect pokemons that you have caught")
 	}
 
-	fmt.Fprintf(os.Stdout,"Name: %s\nHeight: %d\nWeight: %d\nStats:\n -hp: %d\n -attack: %d\n -defense: %d\n -special-attack: %d\n -special-defense: %d\n -speed: %d\nTypes:\n",
-	poke.Name,poke.Height,poke.Weight,poke.Statistics.hp,poke.Statistics.attack,poke.Statistics.defense,poke.Statistics.specialAttack,poke.Statistics.specialDefense,poke.Statistics.speed)
-	
+	fmt.Fprintf(os.Stdout, "Name: %s\nHeight: %d\nWeight: %d\nStats:\n -hp: %d\n -attack: %d\n -defense: %d\n -special-attack: %d\n -special-defense: %d\n -speed: %d\nTypes:\n",
+		poke.Name, poke.Height, poke.Weight, poke.Statistics.hp, poke.Statistics.attack, poke.Statistics.defense, poke.Statistics.specialAttack, poke.Statistics.specialDefense, poke.Statistics.speed)
+
 	for _, ty := range poke.Types {
-		fmt.Fprintf(os.Stdout," - %s\n",ty)
+		fmt.Fprintf(os.Stdout, " - %s\n", ty)
 	}
+	return nil
+}
+
+func commandPokedex(cfg *Config, args []string) error {
+	if len(cfg.pokedex) == 0 {
+		fmt.Fprintf(os.Stdout, "You haven't caught any pokemon yet!\n")
+		return nil
+	}
+	fmt.Fprintf(os.Stdout, "Your Pokedex:\n")
+	for _, poke := range cfg.pokedex {
+		fmt.Fprintf(os.Stdout, " - %s\n", poke.Name)
+	}
+
 	return nil
 }
